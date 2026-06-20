@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id              String    @id @default(uuid()) @db.Uuid
+  student_id      String    @unique
+  full_name       String
+  date_of_birth   DateTime  @db.Date
+  gender          Gender
+  contact_number  String
+  guardian_name   String
+  address         String?
+  batch           Batch
+  level           Level
+  enrollment_date DateTime  @default(now()) @db.Date
+  photo_url       String?
+  is_active       Boolean   @default(true)
+  created_at      DateTime  @default(now()) @db.Timestamptz()
+  billings        Billing[]
+
+  @@map("students")
+}
+
+model Billing {
+  id             String        @id @default(uuid()) @db.Uuid
+  receipt_number String        @unique
+  student_id     String        @db.Uuid
+  student        Student       @relation(fields: [student_id], references: [id])
+  fee_type       FeeType
+  amount         Decimal       @db.Decimal(10, 2)
+  payment_date   DateTime?     @db.Date
+  due_date       DateTime      @db.Date
+  payment_mode   PaymentMode?
+  status         BillingStatus
+  notes          String?
+  created_at     DateTime      @default(now()) @db.Timestamptz()
+
+  @@map("billing")
+}
+
+model User {
+  id         String   @id @default(uuid()) @db.Uuid
+  email      String   @unique
+  role       Role
+  full_name  String
+  created_at DateTime @default(now()) @db.Timestamptz()
+
+  @@map("users")
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum Batch {
+  Morning
+  Evening
+  Weekend
+}
+
+enum Level {
+  Beginner
+  Intermediate
+  Advanced
+}
+
+enum FeeType {
+  Monthly
+  Quarterly
+  Annual
+}
+
+enum PaymentMode {
+  Cash
+  UPI
+  Bank_Transfer @map("Bank Transfer")
+}
+
+enum BillingStatus {
+  Paid
+  Pending
+  Overdue
+}
+
+enum Role {
+  Admin
+  Staff
+}

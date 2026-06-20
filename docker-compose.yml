@@ -1,0 +1,49 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    env_file: .env.local
+    depends_on:
+      - postgres
+    networks:
+      - cricket_network
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: cricket_user
+      POSTGRES_PASSWORD: cricket_pass
+      POSTGRES_DB: cricket_academy
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cricket_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@cricket.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+    networks:
+      - cricket_network
+
+volumes:
+  postgres_data:
+
+networks:
+  cricket_network:
+    driver: bridge
