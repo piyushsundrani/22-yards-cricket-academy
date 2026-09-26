@@ -9,14 +9,21 @@ import Navbar from "@/components/shared/Navbar";
 import PageHeader from "@/components/shared/PageHeader";
 import BillingTable from "@/components/billing/BillingTable";
 import BillingForm from "@/components/billing/BillingForm";
+import PendingPaymentsTable from "@/components/billing/PendingPaymentsTable";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+
+const TABS = [
+  { id: "all", label: "All Payments" },
+  { id: "pending", label: "Pending & Overdue" },
+];
 
 export default function BillingPage() {
   const [billing, setBilling] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
     loadData();
@@ -32,6 +39,10 @@ export default function BillingPage() {
     setStudents(studentsRes.data ?? []);
     setLoading(false);
   }
+
+  const pendingCount = billing.filter(
+    (b) => b.status === "Pending" || b.status === "Overdue"
+  ).length;
 
   return (
     <div className="min-h-screen bg-[#f9f9f7] dark:bg-gray-950">
@@ -51,8 +62,39 @@ export default function BillingPage() {
           }
         />
 
+        {/* Tabs */}
+        <div className="flex gap-1 mb-4 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg w-fit">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            >
+              {tab.label}
+              {tab.id === "pending" && pendingCount > 0 && (
+                <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full bg-red-500 text-white">
+                  {pendingCount > 99 ? "99+" : pendingCount}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-3 sm:p-6">
-          <BillingTable data={billing} students={students} loading={loading} onRefresh={loadData} />
+          {activeTab === "all" ? (
+            <BillingTable
+              data={billing}
+              students={students}
+              loading={loading}
+              onRefresh={loadData}
+            />
+          ) : (
+            <PendingPaymentsTable data={billing} students={students} loading={loading} />
+          )}
         </div>
       </div>
 

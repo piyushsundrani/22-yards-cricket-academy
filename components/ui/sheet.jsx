@@ -50,6 +50,16 @@ const SheetContent = React.forwardRef(
       <DialogPrimitive.Content
         ref={ref}
         className={cn(sheetVariants({ side }), className)}
+        onPointerDownOutside={(e) => {
+          if (document.querySelector("[data-radix-popper-content-wrapper]")) {
+            e.preventDefault();
+          }
+        }}
+        onFocusOutside={(e) => {
+          // When a Select closes, its focus trap releases and focus can land on
+          // document.body (outside SheetContent), triggering an unwanted dismiss.
+          e.preventDefault();
+        }}
         {...props}
       >
         {children}

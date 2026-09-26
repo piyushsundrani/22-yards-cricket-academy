@@ -53,7 +53,7 @@ export default function DashboardPage() {
       const totalStudents = students.length;
       const activeStudents = students.filter((s) => s.is_active).length;
       const totalRevenue = billing
-        .filter((b) => b.status === "Paid")
+        .filter((b) => b.status === "Paid" || b.status === "Expired")
         .reduce((sum, b) => sum + Number(b.amount), 0);
       const pendingDues = billing
         .filter((b) => b.status === "Pending")

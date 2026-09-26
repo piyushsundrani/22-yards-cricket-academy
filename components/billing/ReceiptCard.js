@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import { formatDate, formatCurrency } from "@/lib/utils";
+import { formatDate, formatCurrency, formatMonthYear } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Printer, Download } from "lucide-react";
 
@@ -62,6 +62,7 @@ export default function ReceiptCard({ billing, student }) {
       ["Student Name", student?.full_name ?? "-"],
       ["Batch", student?.batch ?? "-"],
       ["Fee Type", billing.fee_type],
+      ["For Month", formatMonthYear(billing.payment_month)],
       ["Amount", formatCurrency(billing.amount)],
       ["Due Date", formatDate(billing.due_date)],
       ["Payment Mode", billing.payment_mode ?? "-"],
@@ -90,6 +91,7 @@ export default function ReceiptCard({ billing, student }) {
     Paid: "text-green-700 bg-green-50",
     Pending: "text-yellow-700 bg-yellow-50",
     Overdue: "text-red-700 bg-red-50",
+    Expired: "text-gray-700 bg-gray-100",
   };
 
   return (
@@ -137,6 +139,7 @@ export default function ReceiptCard({ billing, student }) {
               ["Student Name", student.full_name],
               ["Batch", student.batch],
               ["Fee Type", billing.fee_type],
+              ["For Month", formatMonthYear(billing.payment_month)],
               ["Due Date", formatDate(billing.due_date)],
               ["Payment Mode", billing.payment_mode ?? "-"],
             ].map(([label, value]) => (

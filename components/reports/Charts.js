@@ -47,7 +47,7 @@ export default function ReportCharts({ students, billing, loading }) {
     monthRevenue[key] = 0;
   }
   (billing ?? [])
-    .filter((b) => b.status === "Paid")
+    .filter((b) => b.status === "Paid" || b.status === "Expired")
     .forEach((b) => {
       const d = new Date(b.payment_date || b.created_at);
       const key = d.toLocaleString("default", { month: "short", year: "2-digit" });

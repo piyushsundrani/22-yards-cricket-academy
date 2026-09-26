@@ -75,6 +75,7 @@ export default function ReportFilters({ filters, onChange, onReset }) {
               <SelectItem value="Paid">Paid</SelectItem>
               <SelectItem value="Pending">Pending</SelectItem>
               <SelectItem value="Overdue">Overdue</SelectItem>
+              <SelectItem value="Expired">Expired</SelectItem>
             </SelectContent>
           </Select>
         </div>

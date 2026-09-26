@@ -110,7 +110,7 @@ export default function ReportsPage() {
   const summary = useMemo(() => {
     const totalStudents = new Set(reportData.map((r) => r.student_id)).size;
     const revenueCollected = reportData
-      .filter((r) => r.status === "Paid")
+      .filter((r) => r.status === "Paid" || r.status === "Expired")
       .reduce((s, r) => s + Number(r.amount ?? 0), 0);
     const pendingAmount = reportData
       .filter((r) => r.status === "Pending")

@@ -37,13 +37,15 @@ export default function BillingForm({ billing, students, onSuccess, onCancel }) 
           student_id: billing.student_id,
           fee_type: billing.fee_type,
           amount: String(billing.amount),
+          payment_month: billing.payment_month?.slice(0, 7) ?? "",
           payment_date: billing.payment_date?.split("T")[0] ?? "",
-          due_date: billing.due_date?.split("T")[0] ?? "",
+          valid_till: billing.valid_till?.split("T")[0] ?? billing.due_date?.split("T")[0] ?? "",
           payment_mode: billing.payment_mode ?? undefined,
           notes: billing.notes ?? "",
         }
       : {
-          due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+          payment_month: new Date().toISOString().slice(0, 7),
+          valid_till: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
         },
   });
 
@@ -56,12 +58,14 @@ export default function BillingForm({ billing, students, onSuccess, onCancel }) 
   async function onSubmit(data) {
     setLoading(true);
     try {
-      const status = computeBillingStatus(data.payment_date || null, data.due_date);
+      const due_date = data.valid_till;
+      const status = computeBillingStatus(data.payment_date || null, due_date, data.valid_till);
+      const payment_month = `${data.payment_month}-01`;
 
       if (billing) {
         const { error } = await supabase
           .from("billing")
-          .update({ ...data, status, amount: Number(data.amount) })
+          .update({ ...data, payment_month, due_date, status, amount: Number(data.amount) })
           .eq("id", billing.id);
         if (error) throw error;
         toast.success("Payment record updated");
@@ -73,6 +77,8 @@ export default function BillingForm({ billing, students, onSuccess, onCancel }) 
 
         const { error } = await supabase.from("billing").insert({
           ...data,
+          payment_month,
+          due_date,
           receipt_number: receiptNumber,
           amount: Number(data.amount),
           status,
@@ -148,9 +154,18 @@ export default function BillingForm({ billing, students, onSuccess, onCancel }) 
         </div>
 
         <div className="space-y-1.5">
-          <Label>Due Date *</Label>
-          <Input type="date" {...register("due_date")} />
-          {errors.due_date && <p className="text-xs text-red-500">{errors.due_date.message}</p>}
+          <Label>Payment For (Month) *</Label>
+          <Input type="month" {...register("payment_month")} />
+          {errors.payment_month && (
+            <p className="text-xs text-red-500">{errors.payment_month.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-1.5">
+          <Label>Valid Till *</Label>
+          <Input type="date" {...register("valid_till")} />
+          {errors.valid_till && <p className="text-xs text-red-500">{errors.valid_till.message}</p>}
+          <p className="text-xs text-gray-400">Payment covers the student until this date</p>
         </div>
 
         <div className="space-y-1.5">

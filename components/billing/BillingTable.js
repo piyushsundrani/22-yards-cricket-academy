@@ -7,7 +7,7 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { formatDate, formatCurrency } from "@/lib/utils";
+import { formatDate, formatCurrency, formatMonthYear } from "@/lib/utils";
 import { Pencil, Printer, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,11 +27,13 @@ const STATUS_COLORS = {
   Paid: "bg-green-100 text-green-700 hover:bg-green-100",
   Pending: "bg-yellow-100 text-yellow-700 hover:bg-yellow-100",
   Overdue: "bg-red-100 text-red-700 hover:bg-red-100",
+  Expired: "bg-gray-200 text-gray-700 hover:bg-gray-200",
 };
 
 export default function BillingTable({ data, students, loading, onRefresh }) {
   const [statusFilter, setStatusFilter] = useState("all");
   const [feeTypeFilter, setFeeTypeFilter] = useState("all");
+  const [monthFilter, setMonthFilter] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [editBilling, setEditBilling] = useState(null);
@@ -49,11 +51,12 @@ export default function BillingTable({ data, students, loading, onRefresh }) {
     return (data ?? []).filter((b) => {
       const matchesStatus = statusFilter === "all" || b.status === statusFilter;
       const matchesFeeType = feeTypeFilter === "all" || b.fee_type === feeTypeFilter;
+      const matchesMonth = !monthFilter || b.payment_month?.slice(0, 7) === monthFilter;
       const matchesFrom = !dateFrom || new Date(b.due_date) >= new Date(dateFrom);
       const matchesTo = !dateTo || new Date(b.due_date) <= new Date(dateTo);
-      return matchesStatus && matchesFeeType && matchesFrom && matchesTo;
+      return matchesStatus && matchesFeeType && matchesMonth && matchesFrom && matchesTo;
     });
-  }, [data, statusFilter, feeTypeFilter, dateFrom, dateTo]);
+  }, [data, statusFilter, feeTypeFilter, monthFilter, dateFrom, dateTo]);
 
   const columns = useMemo(
     () => [
@@ -82,6 +85,11 @@ export default function BillingTable({ data, students, loading, onRefresh }) {
         accessorKey: "amount",
         header: "Amount",
         cell: ({ getValue }) => <span className="font-medium">{formatCurrency(getValue())}</span>,
+      },
+      {
+        accessorKey: "payment_month",
+        header: "For Month",
+        cell: ({ getValue }) => formatMonthYear(getValue()),
       },
       {
         accessorKey: "due_date",
@@ -160,6 +168,7 @@ export default function BillingTable({ data, students, loading, onRefresh }) {
             <SelectItem value="Paid">Paid</SelectItem>
             <SelectItem value="Pending">Pending</SelectItem>
             <SelectItem value="Overdue">Overdue</SelectItem>
+            <SelectItem value="Expired">Expired</SelectItem>
           </SelectContent>
         </Select>
         <Select value={feeTypeFilter} onValueChange={setFeeTypeFilter}>
@@ -173,6 +182,13 @@ export default function BillingTable({ data, students, loading, onRefresh }) {
             <SelectItem value="Annual">Annual</SelectItem>
           </SelectContent>
         </Select>
+        <Input
+          type="month"
+          value={monthFilter}
+          onChange={(e) => setMonthFilter(e.target.value)}
+          className="w-full sm:w-40"
+          placeholder="For Month"
+        />
         <Input
           type="date"
           value={dateFrom}

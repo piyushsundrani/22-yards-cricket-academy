@@ -10,6 +10,8 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  Users,
+  Receipt,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
@@ -20,6 +22,8 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/registration", label: "Registration", icon: UserPlus },
   { href: "/billing", label: "Billing", icon: CreditCard },
+  { href: "/staff", label: "Staff", icon: Users },
+  { href: "/expenses", label: "Expenses", icon: Receipt },
   { href: "/reports", label: "Reports", icon: BarChart3 },
 ];
 
