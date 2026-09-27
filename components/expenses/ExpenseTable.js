@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { IconActionButton } from "@/components/ui/tooltip";
 import ExpenseForm from "./ExpenseForm";
 
 const CATEGORIES = [
@@ -141,18 +142,20 @@ export default function ExpenseTable({ data, loading, onRefresh }) {
         header: "Actions",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <button
+            <IconActionButton
+              label="Edit expense"
               onClick={() => setEditExpense(row.original)}
-              className="p-1.5 hover:bg-blue-50 rounded-md transition-colors text-gray-500 hover:text-blue-600"
+              className="hover:bg-blue-50 hover:text-blue-600"
             >
               <Pencil className="w-4 h-4" />
-            </button>
-            <button
+            </IconActionButton>
+            <IconActionButton
+              label="Delete expense"
               onClick={() => handleDelete(row.original)}
-              className="p-1.5 hover:bg-red-50 rounded-md transition-colors text-gray-500 hover:text-red-500"
+              className="hover:bg-red-50 hover:text-red-500"
             >
               <Trash2 className="w-4 h-4" />
-            </button>
+            </IconActionButton>
           </div>
         ),
       },

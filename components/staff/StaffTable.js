@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { IconActionButton } from "@/components/ui/tooltip";
 import StaffForm from "./StaffForm";
 
 const ROLE_COLORS = {
@@ -101,19 +102,21 @@ export default function StaffTable({ data, loading, onRefresh }) {
         header: "Actions",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <button
+            <IconActionButton
+              label="Edit staff member"
               onClick={() => setEditStaff(row.original)}
-              className="p-1.5 hover:bg-blue-50 rounded-md transition-colors text-gray-500 hover:text-blue-600"
+              className="hover:bg-blue-50 hover:text-blue-600"
             >
               <Pencil className="w-4 h-4" />
-            </button>
-            <button
+            </IconActionButton>
+            <IconActionButton
+              label={row.original.is_active ? "Deactivate staff member" : "Already inactive"}
               onClick={() => handleDeactivate(row.original)}
               disabled={!row.original.is_active}
-              className="p-1.5 hover:bg-red-50 rounded-md transition-colors text-gray-500 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="hover:bg-red-50 hover:text-red-500"
             >
               <UserX className="w-4 h-4" />
-            </button>
+            </IconActionButton>
           </div>
         ),
       },

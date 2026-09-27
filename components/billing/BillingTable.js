@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { IconActionButton } from "@/components/ui/tooltip";
 import BillingForm from "./BillingForm";
 import ReceiptCard from "./ReceiptCard";
 
@@ -118,18 +119,20 @@ export default function BillingTable({ data, students, loading, onRefresh }) {
         header: "Actions",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <button
+            <IconActionButton
+              label="Edit payment"
               onClick={() => setEditBilling(row.original)}
-              className="p-1.5 hover:bg-blue-50 rounded-md transition-colors text-gray-500 hover:text-blue-600"
+              className="hover:bg-blue-50 hover:text-blue-600"
             >
               <Pencil className="w-4 h-4" />
-            </button>
-            <button
+            </IconActionButton>
+            <IconActionButton
+              label="View / print receipt"
               onClick={() => setReceiptBilling(row.original)}
-              className="p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-500 hover:text-gray-700"
+              className="hover:bg-gray-100 hover:text-gray-700"
             >
               <Printer className="w-4 h-4" />
-            </button>
+            </IconActionButton>
           </div>
         ),
       },

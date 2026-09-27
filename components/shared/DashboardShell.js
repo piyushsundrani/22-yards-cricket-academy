@@ -3,6 +3,7 @@
 import { SidebarProvider, useSidebar } from "@/components/shared/SidebarContext";
 import Sidebar from "@/components/shared/Sidebar";
 import { cn } from "@/lib/utils";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 /** @param {{ children: import("react").ReactNode }} props */
 function Shell({ children }) {
@@ -36,7 +37,9 @@ function Shell({ children }) {
 export default function DashboardShell({ children }) {
   return (
     <SidebarProvider>
-      <Shell>{children}</Shell>
+      <TooltipProvider delayDuration={200}>
+        <Shell>{children}</Shell>
+      </TooltipProvider>
     </SidebarProvider>
   );
 }

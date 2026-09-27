@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Student {
-  id                       String        @id @default(uuid()) @db.Uuid
+  id                       String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   student_id               String        @unique
   full_name                String
   date_of_birth            DateTime      @db.Date
@@ -41,7 +41,7 @@ model Student {
 }
 
 model Billing {
-  id             String        @id @default(uuid()) @db.Uuid
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   receipt_number String        @unique
   student_id     String        @db.Uuid
   student        Student       @relation(fields: [student_id], references: [id])
@@ -60,7 +60,7 @@ model Billing {
 }
 
 model User {
-  id         String   @id @default(uuid()) @db.Uuid
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email      String   @unique
   role       Role
   full_name  String
@@ -124,7 +124,7 @@ enum Role {
 }
 
 model Staff {
-  id           String            @id @default(uuid()) @db.Uuid
+  id           String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   staff_id     String            @unique
   full_name    String
   phone        String
@@ -139,7 +139,7 @@ model Staff {
 }
 
 model StaffAttendance {
-  id         String           @id @default(uuid()) @db.Uuid
+  id         String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   staff_id   String           @db.Uuid
   staff      Staff            @relation(fields: [staff_id], references: [id])
   date       DateTime         @db.Date
@@ -167,7 +167,7 @@ enum AttendanceStatus {
 }
 
 model Expense {
-  id           String          @id @default(uuid()) @db.Uuid
+  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   expense_id   String          @unique
   date         DateTime        @db.Date
   category     ExpenseCategory
